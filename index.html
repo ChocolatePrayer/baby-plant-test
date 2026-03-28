@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="main.css" type="text/css">
+      <title>My Website</title>
+    </head>
+
+    <body>
+      <header>
+        <h1>Baby Plant</h1>
+      </header>
+
+      <nav class="navbar">
+        <a href="homepage.html">Home</a>
+        <br>
+        <a href="index.html">Track your plant</a>
+      </nav>
+
+      <h1>Plant's moisture level reading</h1>
+      <div id="data">Loading...</div>
+
+      <!-- Firebase SDK (compat build — works from a CDN with no bundler) -->
+      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+      <script>
+        // =========================================================
+        //  IMPORTANT: Replace the placeholder values below with
+        //  your real Firebase project config.
+        //  Firebase Console > Project Settings > General > Your apps
+        // =========================================================
+        const firebaseConfig = {
+          apiKey:            "YOUR_API_KEY",
+          authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+          databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+          projectId:         "YOUR_PROJECT_ID",
+          storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+          messagingSenderId: "YOUR_SENDER_ID",
+          appId:             "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const sensorRef = db.ref('sensor');
+
+        const LOW_MOISTURE_THRESHOLD = 10;
+        let alerted = false;
+
+        sensorRef.on('value', (snapshot) => {
+          const el = document.getElementById('data');
+          const data = snapshot.val();
+
+          if (!data || data.online === false || data.moisture === null) {
+            el.textContent = 'Arduino device offline';
+            el.style.color = 'gray';
+            alerted = false;
+            return;
+          }
+
+          el.textContent = data.moisture + '%';
+          el.style.color = '';
+
+          if (data.moisture < LOW_MOISTURE_THRESHOLD && !alerted) {
+            alert('Low moisture level!');
+            alerted = true;
+          } else if (data.moisture >= LOW_MOISTURE_THRESHOLD) {
+            alerted = false;
+          }
+        });
+      </script>
+
+    </body>
+</html>

@@ -1,0 +1,71 @@
+
+html{
+    font-size: 22px;
+    background-color: bisque;
+}
+header{
+    background-color: lab(48.81% -29.29 23.36);
+    text-align: left;
+    color: hwb(49 62% 0%);
+    padding: 20px;
+
+}
+p{
+    text-align: left;
+}
+
+.navbar{
+    background-color: #d78fa6;
+    height: 50px;
+    
+}
+body{
+    background-color: rgb(255, 236, 213);
+    color:rgb(33, 70, 28)
+}
+
+a{
+    color:hwb(49 62% 0%);
+}
+
+a:visited {
+    color:hwb(49 62% 0%);
+}
+
+.type{
+    align-items:center;
+    float:inline-end;
+    width:100%;
+
+}
+
+.button{
+    align-items: center;
+    float: left;
+    width: 33%;
+    height: 500px;
+}
+
+.plant{
+    float:right;
+    text-align: center;
+    width: 100%;
+}
+
+.images{
+    float:right;
+}
+
+.img2{
+    align-content: center;
+    width: 50%;
+    float: left;
+}
+
+.intro{
+    text-align: center;
+}
+
+.ref{
+    color: #d78fa6;
+}

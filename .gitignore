@@ -1,0 +1,6 @@
+# Local-only files — never commit these
+arduino-bridge.js
+firebase-config.js
+server.js
+package.json
+package-lock.json
