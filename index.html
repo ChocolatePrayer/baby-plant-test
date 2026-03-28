@@ -41,6 +41,21 @@
           appId:             "YOUR_APP_ID"
         };
 
+        const firebaseConfig = {
+          apiKey:            "AIzaSyApjqjg_hbm58wASLertx5eEcTW9dh5e_g",
+          authDomain:        "baby-plant-9c4b9.firebaseapp.com",
+          databaseURL:       "https://baby-plant-9c4b9-default-rtdb.firebaseio.com",
+          projectId:         "baby-plant-9c4b9",
+          storageBucket:     "baby-plant-9c4b9.appspot.com",
+          messagingSenderId: "1010899293683",
+          appId:             "1:1010899293683:web:3b22ce2d1818d8f8342e86"
+};
+
+
+
+
+
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const sensorRef = db.ref('sensor');
