@@ -96,7 +96,7 @@ section h2 { margin-bottom: 10px; font-size: 1.3rem; }
 img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .img2 {
@@ -130,7 +130,7 @@ img {
   background-color: burlywood;
   color: darkslategray;
   border: none;
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 24px 16px;
   width: 100%;
   cursor: pointer;
@@ -191,7 +191,7 @@ img {
   background-color: bisque;
   font-size: 1.2rem;
   border: 2px solid #d78fa6;
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 10px 24px;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -223,7 +223,7 @@ img {
 /* --- Log table --- */
 .log-panel {
   background: rgba(255, 255, 255, 0.45);
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 16px;
   max-height: 520px;
   overflow-y: auto;
@@ -257,7 +257,7 @@ img {
 /* --- Chart panel --- */
 .chart-panel {
   background: rgba(255, 255, 255, 0.45);
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 16px;
 }
 
