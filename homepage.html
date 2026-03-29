@@ -1,83 +1,68 @@
-/dev <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Baby Plant home page</title>
     <link rel="stylesheet" href="main.css" type="text/css">
-
 </head>
 
-<header>
-    <h1>Baby Plant</h1>
-</header>
-
-<nav class="navbar">
-    <a href="homepage.html">Home</a>
-    <br>
-    <a href="index.html">Track your plant</a>
-
-</nav>
-
 <body>
-    
+    <header>
+        <h1>Baby Plant</h1>
+    </header>
 
-    <div class="type">
+    <nav class="navbar">
+        <a href="homepage.html">Home</a>
+        <br>
+        <a href="index.html">Track your plant</a>
+    </nav>
 
-        <div class="button">
-            <a href="gymnosperm.html">
-                <button style="font-weight: 600;font-style: italic;font-size: xx-large; background-color: burlywood; color: darkslategray; border-radius: 25; height: 400px;width: auto;">
+    <main class="container">
+        <div class="type">
 
-                    <img src="img/cone.png" alt=" " width="270" height="290">
-                    <br>
-                    Gymnosperm
+            <div class="button">
+                <a href="gymnosperm.html" class="card-link">
+                    <button class="card">
+                        <img src="img/cone.png" alt=" " width="270" height="290">
+                        <br>
+                        Gymnosperm
+                    </button>
+                </a>
+            </div>
 
+            <div class="button">
+                <a href="angiosperm.html" class="card-link">
+                    <button class="card">
+                        <img src="img/hibiscus.png" alt="" width="340" height="300">
+                        <br>
+                        Angiosperm
+                    </button>
+                </a>
+            </div>
+
+            <div class="button">
+                <a href="succulent.html" class="card-link">
+                    <button class="card">
+                        <img src="img/succulent.png" alt="" width="350" height="290">
+                        <br>
+                        Succulent
+                    </button>
+                </a>
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="plant">
+            <a href="index.html">
+                <button class="track-btn">
+                    <h2>Click here to track your plant!</h2>
                 </button>
             </a>
         </div>
-
-        <div class="button">
-            <a href="angiosperm.html">
-                <button style="font-weight: 600;font-style: italic;font-size: xx-large; background-color: burlywood; color: darkslategray; border-radius: 25;">
-                    <img src="img/hibiscus.png" alt="" width="340" height="300">
-                    <br>
-                    Angiosperm
-                </button>
-            </a>
-        </div>
-
-
-        <div class="button">
-            <a href="succulent.html">
-                <button style="font-weight: 600;font-style: italic;font-size: xx-large; background-color:burlywood; color: darkslategray; border-radius: 25;">
-                    <img src="img/succulent.png" alt="" width="350" height="290">
-                    <br>
-                    Succulent
-                </button>
-            </a>
-        </div>
-
-    </div>
-
-    <br>
-
-    <div class="plant">
-        
-        
-        <a href="index.html">
-            <button style="font-size: large; background-color: rgb(66, 138, 65); color: rgb(242, 245, 197); border-radius: 25;"> 
-                
-                <h2>Click here to track your plant!</h2>
-                
-            </button>
-        </a>
-
-    </div>
-
-
-
-
-    
+    </main>
 
 </body>
 </html>

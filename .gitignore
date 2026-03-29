@@ -2,6 +2,7 @@
 arduino-bridge.js
 firebase-config.js
 server.js
+.DS_Store
 # no need given that node_modules is committed
 package.json
 package-lock.json

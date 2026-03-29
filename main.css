@@ -1,71 +1,290 @@
+/* ============================================================
+   Baby Plant — Global Stylesheet
+   Color palette: bisque backgrounds, dark-green text,
+   green header, pink navbar, burlywood accents
+   ============================================================ */
 
-html{
-    font-size: 22px;
-    background-color: bisque;
-}
-header{
-    background-color: lab(48.81% -29.29 23.36);
-    text-align: left;
-    color: hwb(49 62% 0%);
-    padding: 20px;
+/* --- Reset & Base --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-}
-p{
-    text-align: left;
+html {
+  font-size: 18px;
+  background-color: rgb(255, 236, 213);
 }
 
-.navbar{
-    background-color: #d78fa6;
-    height: 50px;
-    
-}
-body{
-    background-color: rgb(255, 236, 213);
-    color:rgb(33, 70, 28)
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  background-color: rgb(255, 236, 213);
+  color: rgb(33, 70, 28);
+  line-height: 1.65;
+  min-height: 100vh;
 }
 
-a{
-    color:hwb(49 62% 0%);
+/* --- Header --- */
+header {
+  background-color: #2d6a2e;
+  color: #e6cf8a;
+  padding: 20px 32px;
 }
 
-a:visited {
-    color:hwb(49 62% 0%);
+header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
 }
 
-.type{
-    align-items:center;
-    float:inline-end;
-    width:100%;
-
+/* --- Navbar --- */
+.navbar {
+  background-color: #d78fa6;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 32px;
+  height: 48px;
 }
 
-.button{
-    align-items: center;
-    float: left;
-    width: 33%;
-    height: 500px;
+.navbar br { display: none; }
+
+.navbar a {
+  color: #e6cf8a;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 }
 
-.plant{
-    float:right;
-    text-align: center;
-    width: 100%;
+.navbar a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.images{
-    float:right;
+.navbar a:visited { color: #e6cf8a; }
+
+/* --- Links (general) --- */
+a { color: #d78fa6; }
+a:visited { color: #d78fa6; }
+
+/* --- Container --- */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
 }
 
-.img2{
-    align-content: center;
-    width: 50%;
-    float: left;
+/* --- Page title --- */
+.container > h1 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
 }
 
-.intro{
-    text-align: center;
+.container > hr {
+  border: none;
+  border-top: 2px solid #d78fa6;
+  margin-bottom: 24px;
 }
 
-.ref{
-    color: #d78fa6;
+/* --- Paragraphs & sections --- */
+p {
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+section { margin-bottom: 32px; }
+section h2 { margin-bottom: 10px; font-size: 1.3rem; }
+
+/* --- Images (responsive) --- */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.img2 {
+  float: right;
+  width: 45%;
+  margin: 0 0 16px 24px;
+}
+
+.images {
+  float: right;
+  margin: 0 0 16px 24px;
+}
+
+/* --- Homepage category cards --- */
+.type {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.button { width: auto; height: auto; float: none; }
+
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card {
+  background-color: burlywood;
+  color: darkslategray;
+  border: none;
+  border-radius: 16px;
+  padding: 24px 16px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.3rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.card img {
+  display: block;
+  margin: 0 auto 12px;
+  max-height: 240px;
+  width: auto;
+}
+
+/* --- Homepage "Track your plant" button --- */
+.plant {
+  text-align: center;
+  width: 100%;
+  float: none;
+  margin-top: 16px;
+}
+
+.track-btn {
+  display: inline-block;
+  font-size: 1.1rem;
+  background-color: rgb(66, 138, 65);
+  color: rgb(242, 245, 197);
+  border: none;
+  border-radius: 16px;
+  padding: 16px 32px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.track-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+
+.track-btn h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* --- Reference button --- */
+.ref-btn {
+  color: #d78fa6;
+  background-color: bisque;
+  font-size: 1.2rem;
+  border: 2px solid #d78fa6;
+  border-radius: 12px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ref-btn:hover {
+  background-color: #f5d6c6;
+}
+
+/* ============================================================
+   Moisture Tracking Page
+   ============================================================ */
+
+/* Current reading display */
+#data {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin: 8px 0 28px;
+}
+
+/* Two-column layout: log table + chart */
+.moisture-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* --- Log table --- */
+.log-panel {
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  padding: 16px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.log-panel h3 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: rgb(33, 70, 28);
+}
+
+#log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+#log-table th {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 2px solid #d78fa6;
+  font-weight: 700;
+  color: rgb(33, 70, 28);
+}
+
+#log-table td {
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+/* --- Chart panel --- */
+.chart-panel {
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.chart-panel h3 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: rgb(33, 70, 28);
+}
+
+#moisture-chart {
+  width: 100%;
+  height: 440px;
+  display: block;
+}
+
+/* --- Moisture color classes --- */
+.moisture-blue     { color: #1976d2; }
+.moisture-paleblue { color: #64b5f6; }
+.moisture-gold     { color: #f9a825; }
+.moisture-palered  { color: #e57373; }
+
+/* --- References page --- */
+.ref { color: #d78fa6; }
+
+/* --- Clearfix for float-based content pages --- */
+section::after {
+  content: '';
+  display: table;
+  clear: both;
 }

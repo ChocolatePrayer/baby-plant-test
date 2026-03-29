@@ -1,76 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-      <meta charset="UTF-8">
-      <link rel="stylesheet" href="main.css" type="text/css">
-      <title>My Website</title>
-    </head>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="main.css" type="text/css">
+  <title>Track Your Plant — Baby Plant</title>
+</head>
 
-    <body>
-      <header>
-        <h1>Baby Plant</h1>
-      </header>
+<body>
+  <header>
+    <h1>Baby Plant</h1>
+  </header>
 
-      <nav class="navbar">
-        <a href="homepage.html">Home</a>
-        <br>
-        <a href="index.html">Track your plant</a>
-      </nav>
+  <nav class="navbar">
+    <a href="homepage.html">Home</a>
+    <br>
+    <a href="index.html">Track your plant</a>
+  </nav>
 
-      <h1>Plant's moisture level reading</h1>
-      <div id="data">Loading...</div>
+  <main class="container">
+    <h1>Plant's moisture level reading</h1>
+    <div id="data">Loading...</div>
 
-      <!-- Firebase SDK (compat build — works from a CDN with no bundler) -->
-      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <div class="moisture-dashboard">
+      <div class="log-panel">
+        <h3>Last 20 Readings</h3>
+        <table id="log-table">
+          <thead>
+            <tr><th>Time (EST)</th><th>Moisture</th></tr>
+          </thead>
+          <tbody id="log-body"></tbody>
+        </table>
+      </div>
 
-      <script>
-        // =========================================================
-        //  IMPORTANT: Replace the placeholder values below with
-        //  your real Firebase project config.
-        //  Firebase Console > Project Settings > General > Your apps
-        // =========================================================
+      <div class="chart-panel">
+        <h3>Moisture Over Time</h3>
+        <canvas id="moisture-chart"></canvas>
+      </div>
+    </div>
+  </main>
 
-        const firebaseConfig = {
-          apiKey:            "AIzaSyApjqjg_hbm58wASLertx5eEcTW9dh5e_g",
-          authDomain:        "baby-plant-9c4b9.firebaseapp.com",
-          databaseURL:       "https://baby-plant-9c4b9-default-rtdb.firebaseio.com",
-          projectId:         "baby-plant-9c4b9",
-          storageBucket:     "baby-plant-9c4b9.appspot.com",
-          messagingSenderId: "1010899293683",
-          appId:             "1:1010899293683:web:3b22ce2d1818d8f8342e86"
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey:            "AIzaSyApjqjg_hbm58wASLertx5eEcTW9dh5e_g",
+      authDomain:        "baby-plant-9c4b9.firebaseapp.com",
+      databaseURL:       "https://baby-plant-9c4b9-default-rtdb.firebaseio.com",
+      projectId:         "baby-plant-9c4b9",
+      storageBucket:     "baby-plant-9c4b9.appspot.com",
+      messagingSenderId: "1010899293683",
+      appId:             "1:1010899293683:web:3b22ce2d1818d8f8342e86"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const sensorRef = db.ref('sensor');
+
+    const LOW_MOISTURE_THRESHOLD = 10;
+    const MAX_READINGS = 20;
+    let alerted = false;
+    const readings = [];
+
+    // ---- Helpers ----
+
+    function getMoistureClass(val) {
+      if (val > 50) return 'moisture-blue';
+      if (val > 15) return 'moisture-paleblue';
+      if (val > 5)  return 'moisture-gold';
+      return 'moisture-palered';
+    }
+
+    function formatEST(ts) {
+      return new Date(ts).toLocaleString('en-US', {
+        timeZone: 'America/New_York',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true,
+        month: 'short', day: 'numeric'
+      });
+    }
+
+    // ---- Log table ----
+
+    function renderLog() {
+      const tbody = document.getElementById('log-body');
+      tbody.innerHTML = '';
+      for (let i = readings.length - 1; i >= 0; i--) {
+        const r = readings[i];
+        const tr = document.createElement('tr');
+        const cls = getMoistureClass(r.moisture);
+        tr.innerHTML =
+          '<td>' + formatEST(r.timestamp) + '</td>' +
+          '<td class="' + cls + '" style="font-weight:700">' + r.moisture + '%</td>';
+        tbody.appendChild(tr);
+      }
+    }
+
+    // ---- Canvas chart ----
+
+    function drawChart() {
+      const canvas = document.getElementById('moisture-chart');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width  = canvas.clientWidth  * dpr;
+      canvas.height = canvas.clientHeight * dpr;
+      ctx.scale(dpr, dpr);
+
+      const W = canvas.clientWidth;
+      const H = canvas.clientHeight;
+      const pad = { top: 20, right: 20, bottom: 50, left: 48 };
+      const plotW = W - pad.left - pad.right;
+      const plotH = H - pad.top - pad.bottom;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Background
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.fillRect(pad.left, pad.top, plotW, plotH);
+
+      // Y-axis grid (0–100 in steps of 20)
+      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+      ctx.fillStyle = 'rgb(33,70,28)';
+      ctx.font = '11px Georgia';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      for (let v = 0; v <= 100; v += 20) {
+        const y = pad.top + plotH - (v / 100) * plotH;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(pad.left + plotW, y);
+        ctx.stroke();
+        ctx.fillText(v + '%', pad.left - 6, y);
+      }
+
+      if (readings.length < 2) {
+        ctx.fillStyle = 'rgba(33,70,28,0.4)';
+        ctx.font = '14px Georgia';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Waiting for data...', W / 2, H / 2);
+        return;
+      }
+
+      // Map readings to coordinates
+      const n = readings.length;
+      const points = readings.map(function(r, i) {
+        return {
+          x: pad.left + (i / (MAX_READINGS - 1)) * plotW,
+          y: pad.top + plotH - (Math.min(r.moisture, 100) / 100) * plotH,
+          moisture: r.moisture,
+          timestamp: r.timestamp
         };
+      });
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const sensorRef = db.ref('sensor');
+      // Draw line
+      ctx.beginPath();
+      ctx.strokeStyle = '#2d6a2e';
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      points.forEach(function(p, i) {
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.stroke();
 
-        const LOW_MOISTURE_THRESHOLD = 10;
-        let alerted = false;
+      // Draw dots with per-point color
+      points.forEach(function(p) {
+        var cls = getMoistureClass(p.moisture);
+        var color = '#1976d2';
+        if (cls === 'moisture-paleblue') color = '#64b5f6';
+        else if (cls === 'moisture-gold') color = '#f9a825';
+        else if (cls === 'moisture-palered') color = '#e57373';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
 
-        sensorRef.on('value', (snapshot) => {
-          const el = document.getElementById('data');
-          const data = snapshot.val();
-
-          if (!data || data.online === false || data.moisture === null) {
-            el.textContent = 'Arduino device offline';
-            el.style.color = 'gray';
-            alerted = false;
-            return;
-          }
-
-          el.textContent = data.moisture + '%';
-          el.style.color = '';
-
-          if (data.moisture < LOW_MOISTURE_THRESHOLD && !alerted) {
-            alert('Low moisture level!');
-            alerted = true;
-          } else if (data.moisture >= LOW_MOISTURE_THRESHOLD) {
-            alerted = false;
-          }
+      // X-axis labels (show a few evenly spaced)
+      ctx.fillStyle = 'rgb(33,70,28)';
+      ctx.font = '10px Georgia';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      var step = Math.max(1, Math.floor(n / 5));
+      for (var i = 0; i < n; i += step) {
+        var lbl = new Date(readings[i].timestamp).toLocaleTimeString('en-US', {
+          timeZone: 'America/New_York',
+          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
         });
-      </script>
+        ctx.save();
+        ctx.translate(points[i].x, pad.top + plotH + 8);
+        ctx.rotate(-0.5);
+        ctx.fillText(lbl, 0, 0);
+        ctx.restore();
+      }
+    }
 
-    </body>
+    // ---- Firebase listener ----
+
+    let lastMoisture = null;
+
+    sensorRef.on('value', function(snapshot) {
+      var el = document.getElementById('data');
+      var data = snapshot.val();
+
+      if (!data || data.online === false || data.moisture === null) {
+        el.textContent = 'Arduino device offline';
+        el.style.color = 'gray';
+        alerted = false;
+        return;
+      }
+
+      var val = data.moisture;
+      el.textContent = val + '%';
+      el.className = getMoistureClass(val);
+
+      // Only log if the value actually changed (avoid duplicate entries from reconnects)
+      if (val !== lastMoisture) {
+        lastMoisture = val;
+        readings.push({ moisture: val, timestamp: Date.now() });
+        if (readings.length > MAX_READINGS) readings.shift();
+        renderLog();
+        drawChart();
+      }
+
+      if (val < LOW_MOISTURE_THRESHOLD && !alerted) {
+        alert('Low moisture level!');
+        alerted = true;
+      } else if (val >= LOW_MOISTURE_THRESHOLD) {
+        alerted = false;
+      }
+    });
+
+    // Redraw chart on resize
+    window.addEventListener('resize', drawChart);
+  </script>
+
+</body>
 </html>
