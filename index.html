@@ -121,14 +121,26 @@
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
       ctx.fillRect(pad.left, pad.top, plotW, plotH);
 
-      // Y-axis grid (0–100 in steps of 20)
+      // Compute Y-axis range from data (default 0–100, expand if needed)
+      var yMin = 0, yMax = 100;
+      if (readings.length > 0) {
+        var vals = readings.map(function(r) { return r.moisture; });
+        var dataMin = Math.min.apply(null, vals);
+        var dataMax = Math.max.apply(null, vals);
+        if (dataMin < 0) yMin = Math.floor(dataMin / 20) * 20;
+        if (dataMax > 100) yMax = Math.ceil(dataMax / 20) * 20;
+      }
+      var yRange = yMax - yMin || 1;
+
+      // Y-axis grid
       ctx.strokeStyle = 'rgba(0,0,0,0.1)';
       ctx.fillStyle = 'rgb(33,70,28)';
       ctx.font = '11px Georgia';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
-      for (let v = 0; v <= 100; v += 20) {
-        const y = pad.top + plotH - (v / 100) * plotH;
+      var yStep = Math.max(10, Math.round(yRange / 5 / 10) * 10) || 20;
+      for (var v = yMin; v <= yMax; v += yStep) {
+        var y = pad.top + plotH - ((v - yMin) / yRange) * plotH;
         ctx.beginPath();
         ctx.moveTo(pad.left, y);
         ctx.lineTo(pad.left + plotW, y);
@@ -145,12 +157,14 @@
         return;
       }
 
-      // Map readings to coordinates
+      // Map readings to coordinates (clamped to plot area)
       const n = readings.length;
       const points = readings.map(function(r, i) {
+        var yPos = pad.top + plotH - ((r.moisture - yMin) / yRange) * plotH;
+        yPos = Math.max(pad.top, Math.min(pad.top + plotH, yPos));
         return {
           x: pad.left + (i / (MAX_READINGS - 1)) * plotW,
-          y: pad.top + plotH - (Math.min(r.moisture, 100) / 100) * plotH,
+          y: yPos,
           moisture: r.moisture,
           timestamp: r.timestamp
         };
